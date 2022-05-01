@@ -7,29 +7,48 @@
 main {
   height: 100vh;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
+h1 {
+  margin-top: 50px;
+  margin-bottom: 350px;
+  display: flex;
+  font-size: 30px;
+  color: rgb(25, 25, 224);
+}
+
 #playarea {
-  background-color: black;
+  background-color: rgb(36, 34, 34);
   width: 600px;
   height: 240px;
-  border: 2px solid blue;
+  border: 3px solid rgb(25, 25, 224);
   background-image: radial-gradient(white 10%, transparent 0%);
   background-size: 30px 30px;
-  position: relative;
+  position: absolute;
+  z-index: 0;
 }
 
 #pacman {
-  width: 30px;
-  height: 30px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%; 
-  position: absolut;
+  position: absolute;
   display: block;
   margin-left: 0px;
   margin-top: 0px;
   background: conic-gradient(yellow 55deg, transparent 0 125deg, yellow 0);
+  z-index: 2;
+}
+
+.eaten {
+  width: 25px;
+  height: 25px;
+  background-color: rgb(36, 34, 34);
+  position: absolute;
+  z-index: 1;
 }
 
 @keyframes eatRight {
@@ -50,6 +69,11 @@ main {
 @keyframes eatUp{
   0%, 50% { background: conic-gradient(transparent 0 45deg, yellow 0 315deg, transparent 0); }
   25% { background: conic-gradient(yellow 0, yellow 0);}
+}
+
+@keyframes win{
+  0%, 100% { font-size: 30px; color: rgb(25, 25, 224);}
+  50% { font-size: 40px; color:rgb(81, 121, 209);}
 }
 
 
