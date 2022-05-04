@@ -182,6 +182,7 @@ class Pacman {
   }
 
   moveRight() {
+    checkIfEated();
     if (this.positionMarginLeft + step < widthOfPlayArea) {
       this.positionMarginLeft += step;
       pacman.style.marginLeft = this.positionMarginLeft + 'px';
@@ -193,6 +194,7 @@ class Pacman {
   }
 
   moveLeft() {
+    checkIfEated();
     if (this.positionMarginLeft > 0) {
       this.positionMarginLeft -= step;
       pacman.style.marginLeft = this.positionMarginLeft + 'px';
@@ -204,6 +206,7 @@ class Pacman {
   }
 
   moveUp() {
+    checkIfEated();
     if (this.positionMarginTop > 0) {
       this.positionMarginTop -= step;
       pacman.style.marginTop = this.positionMarginTop + 'px';
@@ -215,6 +218,7 @@ class Pacman {
   }
 
   moveDown() {
+    checkIfEated();
     if (this.positionMarginTop + step < heightOfPlayArea) {
       this.positionMarginTop += step;
       pacman.style.marginTop = this.positionMarginTop + 'px';
@@ -231,6 +235,10 @@ const keyArrowEvents = ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'];
 
 const checkIfEated = () => {
   if (myPacman.positionMarginLeft === firstGhost.positionMarginLeft && myPacman.positionMarginTop === firstGhost.positionMarginTop) {
+    console.log("pacman left: " + myPacman.positionMarginLeft);
+    console.log("ghost left: " + firstGhost.positionMarginLeft);
+    console.log("pacman top: " + myPacman.positionMarginTop);
+    console.log("ghost top: " + firstGhost.positionMarginTop);
     console.log("eaten");
     gameFinished = true;
     myPlayArea.letItLose();

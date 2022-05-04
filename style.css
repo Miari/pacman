@@ -44,15 +44,14 @@ h1 {
 }
 
 #ghost {
-  width: 26px;
-  height: 26px;
+  width: 30px;
+  height: 30px;
   margin-top: 120px;
   margin-left: 300px;
   position: absolute;
   display: block;
   z-index: 3;
-  border-radius: 30%;
-  background-color: cyan;
+
 }
 
 .eaten {
@@ -68,29 +67,29 @@ h1 {
   25% { background: conic-gradient(yellow 55deg, yellow 0);}
 }
 
-@keyframes eatLeft{
+@keyframes eatLeft {
   0%, 50% { background: conic-gradient(yellow 235deg, transparent 0 310deg, yellow 0); }
   25% { background: conic-gradient(yellow 235deg, yellow 0);}
 }
 
-@keyframes eatDown{
+@keyframes eatDown {
   0%, 50% { background: conic-gradient(yellow 140deg, transparent 0 215deg, yellow 0); }
   25% { background: conic-gradient(yellow 140deg, yellow 0);}
 }
 
-@keyframes eatUp{
+@keyframes eatUp {
   0%, 50% { background: conic-gradient(transparent 0 45deg, yellow 0 315deg, transparent 0); }
   25% { background: conic-gradient(yellow 0, yellow 0);}
 }
 
-@keyframes win{
+@keyframes win {
   0%, 100% { font-size: 30px; color: rgb(25, 25, 224);}
   50% { font-size: 40px; color:rgb(81, 121, 209);}
 }
 
-@keyframes lose{
-  0%, 100% { background-color: rgb(81, 121, 209);}
-  50% {background-color:cyan;}
+@keyframes lose {
+  0%, 100% { width: 30px; height: 30px;}
+  50% {width: 35px; height: 35px;}
 }
 
 
