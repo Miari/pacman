@@ -1,6 +1,5 @@
 let pacman = document.getElementById("pacman");
-let ghost = document.getElementById("ghost");
-console.log(ghost);
+let ghosts = document.getElementsByClassName("ghost");
 let playarea = document.getElementById("playarea");
 let score = document.getElementById("score");
 let scoreHeader = document.getElementById("score-header");
@@ -57,43 +56,32 @@ class Playarea {
     scoreHeader.style.animation = "win 1.5s infinite linear";
   }
 
-  letItLose() {
+  letItLose(index) {
     scoreHeader.innerHTML = "You lose :(";
-    ghost.style.animation = "lose 1.5s infinite linear";
+    ghosts[index].style.animation = "lose 1.5s infinite linear";
   }
-
-  /*printArray() { //temporaryFunction
-    /*for (let i = 0; i < numberOfHorizontalDots; i++) {
-      for (let j = 0; j < numberOfVerticalDots; j++) {
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 3; j++) {
-        console.log(("i = " + i + " j = " + j + " value = " + arrayHorizontal[i][j] + " "));
-      }
-    }
-  }*/
 }
 
 const myPlayArea = new Playarea(widthOfPlayArea, heightOfPlayArea);
 
 class Ghost {
-  constructor(positionMarginLeft, positionMarginTop) {
+  constructor(positionMarginLeft, positionMarginTop, index) {
     this.positionMarginLeft = positionMarginLeft;
     this.positionMarginTop = positionMarginTop;
+    this.index = index;
     this.numberOfSteps = this.getRandom(1, 21);
     this.numberOfStepsDone = 0;
     this.currentDirection = 'right';
+    this.ghost = ghosts[index];
   }
 
   moveGhost() {
     if (gameFinished === false) {
       setTimeout(() => this.moveGhost(), 200);
       if (this.numberOfStepsReached()) {
-        //console.log("reached");
         this.numberOfStepsDone = 0;
         this.numberOfSteps = this.getRandom(1, 21);
         this.defineCurrentDirection();
-        /*console.log("new numbers set");
-        console.log("new Direction is " + this.currentDirection);*/
       } else {
         if (this.currentDirection === 'right') {
           if (this.positionMarginLeft + step < widthOfPlayArea) {
@@ -102,7 +90,7 @@ class Ghost {
             this.currentDirection = 'left';
             this.positionMarginLeft -= step;
           }
-          ghost.style.marginLeft = this.positionMarginLeft + 'px';
+          this.ghost.style.marginLeft = this.positionMarginLeft + 'px';
         }
 
         if (this.currentDirection === 'left') {
@@ -112,7 +100,7 @@ class Ghost {
             this.currentDirection = 'right';
             this.positionMarginLeft += step;
           }
-          ghost.style.marginLeft = this.positionMarginLeft + 'px';
+          this.ghost.style.marginLeft = this.positionMarginLeft + 'px';
         }
 
         if (this.currentDirection === 'down') {
@@ -122,7 +110,7 @@ class Ghost {
             this.currentDirection = 'top';
             this.positionMarginLeft -= step;
           }
-          ghost.style.marginTop = this.positionMarginTop + 'px';
+          this.ghost.style.marginTop = this.positionMarginTop + 'px';
         }
 
         if (this.currentDirection === 'top') {
@@ -132,7 +120,7 @@ class Ghost {
             this.currentDirection = 'down';
             this.positionMarginLeft += step;
           }
-          ghost.style.marginTop = this.positionMarginTop + 'px';
+          this.ghost.style.marginTop = this.positionMarginTop + 'px';
         }
         checkIfEated();
         this.numberOfStepsDone += 1;
@@ -147,8 +135,6 @@ class Ghost {
   }
 
   numberOfStepsReached() {
-    //console.log("number of steps " + this.numberOfSteps);
-    //console.log("unmber of steps done " + this.numberOfStepsDone);
     return this.numberOfStepsDone < this.numberOfSteps ? false : true;
   }
 
@@ -172,14 +158,21 @@ class Ghost {
   }
 }
 
-const firstGhost = new Ghost(300, 120);
+const firstGhost = new Ghost(300, 120, 0);
+const secondGhost = new Ghost(300, 120, 1);
+const thirdGhost = new Ghost(300, 120, 2);
+const fourthGhost = new Ghost(300, 120, 3);
+const ghostes = [firstGhost, secondGhost, thirdGhost, fourthGhost];
 setTimeout(() => firstGhost.moveGhost(), 1000);
+setTimeout(() => secondGhost.moveGhost(), 1000);
+setTimeout(() => thirdGhost.moveGhost(), 1000);
+setTimeout(() => fourthGhost.moveGhost(), 1000);
 
 class Pacman {
   constructor(positionMarginLeft, positionMarginTop) {
     this.positionMarginLeft = positionMarginLeft;
     this.positionMarginTop = positionMarginTop;
-  }
+  } h
 
   moveRight() {
     checkIfEated();
@@ -234,15 +227,12 @@ const myPacman = new Pacman(0, 0);
 const keyArrowEvents = ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'];
 
 const checkIfEated = () => {
-  if (myPacman.positionMarginLeft === firstGhost.positionMarginLeft && myPacman.positionMarginTop === firstGhost.positionMarginTop) {
-    console.log("pacman left: " + myPacman.positionMarginLeft);
-    console.log("ghost left: " + firstGhost.positionMarginLeft);
-    console.log("pacman top: " + myPacman.positionMarginTop);
-    console.log("ghost top: " + firstGhost.positionMarginTop);
-    console.log("eaten");
-    gameFinished = true;
-    myPlayArea.letItLose();
-  }
+  ghostes.forEach((element, index) => {
+    if (element.positionMarginLeft === myPacman.positionMarginLeft && element.positionMarginTop === myPacman.positionMarginTop) {
+      gameFinished = true;
+      myPlayArea.letItLose(index);
+    }
+  });
 }
 
 document.addEventListener('keydown', (e) => {
@@ -257,4 +247,3 @@ document.addEventListener('keydown', (e) => {
 document.addEventListener('keyup', (e) => {
   if (keyArrowEvents.includes(e.code)) pacman.style.removeProperty('animation');
 })
-
