@@ -6,11 +6,9 @@ let score = document.getElementById("score");
 let scoreHeader = document.getElementById("score-header");
 let gameFinished = false;
 let gameWin = false;
-//const widthOfPlayArea = document.getElementById("playarea").style.width;
 const widthOfPlayArea = 600;
 const heightOfPlayArea = 240;
 const step = 30;
-//console.log("!" + document.getElementById("playarea").style.width);
 
 const numberOfHorizontalDots = widthOfPlayArea / step;
 const numberOfVerticalDots = heightOfPlayArea / step;
@@ -81,41 +79,101 @@ class Ghost {
   constructor(positionMarginLeft, positionMarginTop) {
     this.positionMarginLeft = positionMarginLeft;
     this.positionMarginTop = positionMarginTop;
+    this.numberOfSteps = this.getRandom(1, 21);
+    this.numberOfStepsDone = 0;
     this.currentDirection = 'right';
-
   }
 
   moveGhost() {
     if (gameFinished === false) {
       setTimeout(() => this.moveGhost(), 200);
-      if (this.currentDirection === 'right') {
-        if (this.positionMarginLeft + step < widthOfPlayArea) {
-          this.positionMarginLeft += step;
-        } else {
-          this.currentDirection = 'left';
-          this.positionMarginLeft -= step;
+      if (this.numberOfStepsReached()) {
+        //console.log("reached");
+        this.numberOfStepsDone = 0;
+        this.numberOfSteps = this.getRandom(1, 21);
+        this.defineCurrentDirection();
+        /*console.log("new numbers set");
+        console.log("new Direction is " + this.currentDirection);*/
+      } else {
+        if (this.currentDirection === 'right') {
+          if (this.positionMarginLeft + step < widthOfPlayArea) {
+            this.positionMarginLeft += step;
+          } else {
+            this.currentDirection = 'left';
+            this.positionMarginLeft -= step;
+          }
+          ghost.style.marginLeft = this.positionMarginLeft + 'px';
         }
-        ghost.style.marginLeft = this.positionMarginLeft + 'px';
-      }
 
-      if (this.currentDirection === 'left') {
-        if (this.positionMarginLeft > 0) {
-          this.positionMarginLeft -= step;
-        } else {
-          this.currentDirection = 'right';
-          this.positionMarginLeft += step;
+        if (this.currentDirection === 'left') {
+          if (this.positionMarginLeft > 0) {
+            this.positionMarginLeft -= step;
+          } else {
+            this.currentDirection = 'right';
+            this.positionMarginLeft += step;
+          }
+          ghost.style.marginLeft = this.positionMarginLeft + 'px';
         }
-        ghost.style.marginLeft = this.positionMarginLeft + 'px';
+
+        if (this.currentDirection === 'down') {
+          if (this.positionMarginTop + step < heightOfPlayArea) {
+            this.positionMarginTop += step;
+          } else {
+            this.currentDirection = 'top';
+            this.positionMarginLeft -= step;
+          }
+          ghost.style.marginTop = this.positionMarginTop + 'px';
+        }
+
+        if (this.currentDirection === 'top') {
+          if (this.positionMarginTop > 0) {
+            this.positionMarginTop -= step;
+          } else {
+            this.currentDirection = 'down';
+            this.positionMarginLeft += step;
+          }
+          ghost.style.marginTop = this.positionMarginTop + 'px';
+        }
+        checkIfEated();
+        this.numberOfStepsDone += 1;
       }
-      checkIfEated();
     }
   }
 
+  getRandom(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min;
+  }
+
+  numberOfStepsReached() {
+    //console.log("number of steps " + this.numberOfSteps);
+    //console.log("unmber of steps done " + this.numberOfStepsDone);
+    return this.numberOfStepsDone < this.numberOfSteps ? false : true;
+  }
+
+  defineCurrentDirection() {
+    const number = this.getRandom(1, 5);
+    if (number === 1)
+      if (this.currentDirection === "left") this.defineCurrentDirection()
+      else this.currentDirection = "left";
+
+    if (number === 2)
+      if (this.currentDirection === "right") this.defineCurrentDirection()
+    this.currentDirection = "right";
+
+    if (number === 3)
+      if (this.currentDirection === "down") this.defineCurrentDirection()
+      else this.currentDirection = "down";
+
+    if (number === 4)
+      if (this.currentDirection === "top") this.defineCurrentDirection()
+      else this.currentDirection = "top";
+  }
 }
 
 const firstGhost = new Ghost(300, 120);
 setTimeout(() => firstGhost.moveGhost(), 1000);
-
 
 class Pacman {
   constructor(positionMarginLeft, positionMarginTop) {
@@ -141,6 +199,7 @@ class Pacman {
       pacman.style.background = "conic-gradient(yellow 235deg, transparent 0 310deg, yellow 0)";
       pacman.style.animation = "eatLeft 0.4s infinite linear";
       if (this.positionMarginLeft % step === 0 && this.positionMarginTop % step === 0) myPlayArea.eatDot(this.positionMarginLeft / step, this.positionMarginTop / step);
+      checkIfEated();
     }
   }
 
@@ -151,6 +210,7 @@ class Pacman {
       pacman.style.background = "conic-gradient(transparent 0 45deg, yellow 45deg 320deg, transparent 0 0)";
       pacman.style.animation = "eatUp 0.4s infinite linear";
       if (this.positionMarginLeft % step === 0 && this.positionMarginTop % step === 0) myPlayArea.eatDot(this.positionMarginLeft / step, this.positionMarginTop / step);
+      checkIfEated();
     }
   }
 
@@ -161,6 +221,7 @@ class Pacman {
       pacman.style.background = "conic-gradient(yellow 140deg, transparent 0 215deg, yellow 0)";
       pacman.style.animation = "eatDown 0.4s infinite linear";
       if (this.positionMarginLeft % step === 0 && this.positionMarginTop % step === 0) myPlayArea.eatDot(this.positionMarginLeft / step, this.positionMarginTop / step);
+      checkIfEated();
     }
   }
 }
@@ -170,6 +231,7 @@ const keyArrowEvents = ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'];
 
 const checkIfEated = () => {
   if (myPacman.positionMarginLeft === firstGhost.positionMarginLeft && myPacman.positionMarginTop === firstGhost.positionMarginTop) {
+    console.log("eaten");
     gameFinished = true;
     myPlayArea.letItLose();
   }
