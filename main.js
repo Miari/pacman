@@ -57,7 +57,7 @@ class Playarea {
   }
 
   letItLose(index) {
-    scoreHeader.innerHTML = "You lose :(";
+    scoreHeader.innerHTML = "Game over :(";
     ghosts[index].style.animation = "lose 1.5s infinite linear";
   }
 }
@@ -71,7 +71,7 @@ class Ghost {
     this.index = index;
     this.numberOfSteps = this.getRandom(1, 21);
     this.numberOfStepsDone = 0;
-    this.currentDirection = 'right';
+    this.currentDirection = this.defineCurrentDirection();
     this.ghost = ghosts[index];
   }
 
@@ -141,32 +141,32 @@ class Ghost {
   defineCurrentDirection() {
     const number = this.getRandom(1, 5);
     if (number === 1)
-      if (this.currentDirection === "left") this.defineCurrentDirection()
+      if (this.currentDirection && this.currentDirection === "left") this.defineCurrentDirection()
       else this.currentDirection = "left";
 
     if (number === 2)
-      if (this.currentDirection === "right") this.defineCurrentDirection()
+      if (this.currentDirection && this.currentDirection === "right") this.defineCurrentDirection()
     this.currentDirection = "right";
 
     if (number === 3)
-      if (this.currentDirection === "down") this.defineCurrentDirection()
+      if (this.currentDirection && this.currentDirection === "down") this.defineCurrentDirection()
       else this.currentDirection = "down";
 
     if (number === 4)
-      if (this.currentDirection === "top") this.defineCurrentDirection()
+      if (this.currentDirection && this.currentDirection === "top") this.defineCurrentDirection()
       else this.currentDirection = "top";
   }
 }
 
-const firstGhost = new Ghost(300, 120, 0);
-const secondGhost = new Ghost(300, 120, 1);
-const thirdGhost = new Ghost(300, 120, 2);
-const fourthGhost = new Ghost(300, 120, 3);
+const firstGhost = new Ghost(270, 120, 0);
+const secondGhost = new Ghost(270, 120, 1);
+const thirdGhost = new Ghost(270, 120, 2);
+const fourthGhost = new Ghost(270, 120, 3);
 const ghostes = [firstGhost, secondGhost, thirdGhost, fourthGhost];
-setTimeout(() => firstGhost.moveGhost(), 1000);
-setTimeout(() => secondGhost.moveGhost(), 1000);
-setTimeout(() => thirdGhost.moveGhost(), 1000);
-setTimeout(() => fourthGhost.moveGhost(), 1000);
+
+ghostes.forEach(element => {
+  setTimeout(() => element.moveGhost(), 1000);
+})
 
 class Pacman {
   constructor(positionMarginLeft, positionMarginTop) {
