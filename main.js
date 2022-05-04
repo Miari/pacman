@@ -1,16 +1,16 @@
 let pacman = document.getElementById("pacman");
+let ghost = document.getElementById("ghost");
+console.log(ghost);
 let playarea = document.getElementById("playarea");
 let score = document.getElementById("score");
 let scoreHeader = document.getElementById("score-header");
+let gameFinished = false;
+let gameWin = false;
 //const widthOfPlayArea = document.getElementById("playarea").style.width;
 const widthOfPlayArea = 600;
 const heightOfPlayArea = 240;
 const step = 30;
 //console.log("!" + document.getElementById("playarea").style.width);
-
-
-
-let test = document.getElementById("test");
 
 const numberOfHorizontalDots = widthOfPlayArea / step;
 const numberOfVerticalDots = heightOfPlayArea / step;
@@ -48,10 +48,20 @@ class Playarea {
       playarea.append(div);
     }
     if (this.currentScore === 160) {
-      scoreHeader.innerHTML = "You won!!!";
-      scoreHeader.style.color = "red";
-      scoreHeader.style.animation = "win 1.5s infinite linear";
+      gameWin = true;
+      gameFinished = true;
+      this.letItWin();
     }
+  }
+
+  letItWin() {
+    scoreHeader.innerHTML = "You won!!!";
+    scoreHeader.style.animation = "win 1.5s infinite linear";
+  }
+
+  letItLose() {
+    scoreHeader.innerHTML = "You lose :(";
+    ghost.style.animation = "lose 1.5s infinite linear";
   }
 
   /*printArray() { //temporaryFunction
@@ -67,6 +77,46 @@ class Playarea {
 
 const myPlayArea = new Playarea(widthOfPlayArea, heightOfPlayArea);
 
+class Ghost {
+  constructor(positionMarginLeft, positionMarginTop) {
+    this.positionMarginLeft = positionMarginLeft;
+    this.positionMarginTop = positionMarginTop;
+    this.currentDirection = 'right';
+
+  }
+
+  moveGhost() {
+    if (gameFinished === false) {
+      setTimeout(() => this.moveGhost(), 200);
+      if (this.currentDirection === 'right') {
+        if (this.positionMarginLeft + step < widthOfPlayArea) {
+          this.positionMarginLeft += step;
+        } else {
+          this.currentDirection = 'left';
+          this.positionMarginLeft -= step;
+        }
+        ghost.style.marginLeft = this.positionMarginLeft + 'px';
+      }
+
+      if (this.currentDirection === 'left') {
+        if (this.positionMarginLeft > 0) {
+          this.positionMarginLeft -= step;
+        } else {
+          this.currentDirection = 'right';
+          this.positionMarginLeft += step;
+        }
+        ghost.style.marginLeft = this.positionMarginLeft + 'px';
+      }
+      checkIfEated();
+    }
+  }
+
+}
+
+const firstGhost = new Ghost(300, 120);
+setTimeout(() => firstGhost.moveGhost(), 1000);
+
+
 class Pacman {
   constructor(positionMarginLeft, positionMarginTop) {
     this.positionMarginLeft = positionMarginLeft;
@@ -80,6 +130,7 @@ class Pacman {
       pacman.style.animation = "eatRight 0.4s infinite linear";
       pacman.style.background = "conic-gradient(yellow 55deg, transparent 55deg 125deg, yellow 0)";
       if (this.positionMarginLeft % step === 0 && this.positionMarginTop % step === 0) myPlayArea.eatDot(this.positionMarginLeft / step, this.positionMarginTop / step);
+      checkIfEated();
     }
   }
 
@@ -114,15 +165,23 @@ class Pacman {
   }
 }
 
-
 const myPacman = new Pacman(0, 0);
 const keyArrowEvents = ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'];
 
+const checkIfEated = () => {
+  if (myPacman.positionMarginLeft === firstGhost.positionMarginLeft && myPacman.positionMarginTop === firstGhost.positionMarginTop) {
+    gameFinished = true;
+    myPlayArea.letItLose();
+  }
+}
+
 document.addEventListener('keydown', (e) => {
-  if (e.code === 'ArrowRight') myPacman.moveRight();
-  if (e.code === 'ArrowLeft') myPacman.moveLeft();
-  if (e.code === 'ArrowUp') myPacman.moveUp();
-  if (e.code === 'ArrowDown') myPacman.moveDown();
+  if (gameFinished === false) {
+    if (e.code === 'ArrowRight') myPacman.moveRight();
+    if (e.code === 'ArrowLeft') myPacman.moveLeft();
+    if (e.code === 'ArrowUp') myPacman.moveUp();
+    if (e.code === 'ArrowDown') myPacman.moveDown();
+  }
 })
 
 document.addEventListener('keyup', (e) => {
